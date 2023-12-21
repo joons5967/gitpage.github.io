@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>주기적인 처리 / window 시간차마다 실행하기</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #banner {
+            height: 0;
+            padding-top: 50%;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            transition: 0.5s;
+        }
+
+        .banner .btns {
+            text-align: center;
+            padding: 1rem;
+        }
+
+        .banner .btns span {
+            display: inline-block;
+            width: 0.8rem;
+            height: 0.8rem;
+            border-radius: 50%;
+            border: 2px solid red;
+            font-size: 0;
+            line-height: 0;
+            margin: 0 1rem;
+        }
+
+        .banner .btns span.act {
+            background-color: red;
+        }
+    </style>
+</head>
+
+<body>
+    <section class="banner">
+        <div id="banner" class="banner red cc bbb " style="background-image: url(img/banner_0.jpg);">
+            <!-- setInterval은 처음 화면 랜딩시 아무것도 해주지 않는다
+               첫번째 실행코드는 html태그와 스타일에서 처리해줘야 한다.
+              style="background-image: url(img/banner_0.jpg);"을 넣은 이유임 -->
+        </div>
+        <div class="btns">
+            <!-- 추후 버튼을 innerHTML로 삽입할 부모태그 -->
+        </div>
+
+    </section>
+    <script>
+
+        let count = 0;
+        const contentnum = 6;
+
+        let btntag = "";
+        for (i = 0; i < contentnum; i++) {
+            btntag += "<span>" + i + "</span>";
+        }
+        document.querySelector(".banner .btns").innerHTML = btntag;
+        document.querySelectorAll(".banner .btns span")[count].classList = "act";
+        const autocolor = () => {
+            count++;
+            count %= contentnum;
+            document.querySelector("#banner").style.backgroundImage = `url(img/banner_${count}.jpg)`;
+
+            document.querySelectorAll(".banner .btns span").forEach((el, idx) => {
+                if (count === idx) {
+                    el.classList = 'act'
+                } else {
+                    el.classList = ''
+                }
+            })
+        }
+        let autobackground = setInterval(function () { autocolor(); }, 1000);
+        // let 으로 선언하기
+
+        document.querySelectorAll(".banner .btns span").forEach((el, idx) => {
+            el.addEventListener('click', function () {
+                //클릭해야지만 실행되는 식
+                clearInterval(autobackground); //자동롤링 멈춰줘  
+                count = idx; //타켓번호에 클릭된 버튼의 번호를 넣어주고
+                document.querySelectorAll(".banner .btns span").forEach((eel, iidx) => {
+                    eel.classList = ''
+                })
+                //일단 모든 버튼들에게 클래스 삭제하고
+                document.querySelectorAll(".banner .btns span")[count].classList = "act";
+                //한마리만 act주고
+                document.querySelector("#banner").style.backgroundImage = `url(img/banner_${count}.jpg)`;
+                //그번호의 배경으로 고치기
+            })
+        })
+    </script>
+</body>
+
+</html>
